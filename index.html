@@ -30,10 +30,8 @@
             width:100%;
             max-width:480px;
             border-radius:var(--radius);
-            overflow:visible; /* สำคัญ! ต้อง visible เพื่อให้ dropdown โผล่ออกมาได้เต็มที่ */
             box-shadow:var(--shadow);
             position:relative;
-            z-index:1;
         }
         .h{
             background:linear-gradient(135deg,var(--p),var(--pl));
@@ -45,90 +43,65 @@
         .h h2{font-size:2rem;font-weight:800}
         .h p{margin-top:12px;font-size:1.1rem;opacity:.95}
         .ct{padding:36px 28px 40px;position:relative}
-
         .sb{position:relative;margin-bottom:28px}
-
         #i{
             width:100%;
             padding:20px 24px;
-            font-size:1.2rem;
+            font-size:1.4rem;  /* ใหญ่ขึ้น พิมพ์ง่าย */
             border:2px solid #e2e8f0;
             border-radius:18px;
             background:#fff;
-            transition:all .3s;
+            transition:all .2s;
         }
         #i:focus{
             outline:none;
             border-color:var(--a);
             box-shadow:0 0 0 6px rgba(0,102,255,.18);
         }
-
-        /* Dropdown ใหม่ – โผล่ทับทุกอย่าง ไม่บังแน่นอน */
+        /* Dropdown ปรับให้โผล่เร็วและลื่น */
         #r{
             position:absolute;
             top:100%;
             left:50%;
             transform:translateX(-50%);
-            width:calc(100% - 40px);     /* กว้างเกือบเต็มจอ */
-            max-height:65vh;             /* สูงสุด 65% ของหน้าจอ */
+            width:calc(100% - 40px);
+            max-height:65vh;
             background:#fff;
             border-radius:20px;
             box-shadow:var(--shadow);
             border:3px solid var(--a);
-            overflow:hidden;
+            overflow-y:auto;
             opacity:0;
             visibility:hidden;
-            transform:translateX(-50%) translateY(-20px) scale(0.94);
-            transition:all .4s cubic-bezier(0.34,1.56,0.64,1);
-            z-index:9999;                /* อยู่บนสุดสุด */
+            transform:translateX(-50%) translateY(-10px) scale(0.96);
+            transition:all .25s ease;
+            z-index:9999;
         }
         #r.show{
             opacity:1;
             visibility:visible;
-            transform:translateX(-50%) translateY(10px) scale(1);
+            transform:translateX(-50%) translateY(4px) scale(1);
         }
-
-        /* Scroll ลื่น + มีแถบเลื่อนสวย */
-        #r::-webkit-scrollbar{width:10px}
-        #r::-webkit-scrollbar-track{background:#f1f5f9;border-radius:10px}
-        #r::-webkit-scrollbar-thumb{background:var(--a);border-radius:10px}
-
         .ri{
-            padding:26px 28px;
-            min-height:96px;
+            padding:24px 28px;
             border-bottom:1px solid #e2e8f0;
             cursor:pointer;
-            transition:all .25s;
+            transition:all .15s;
             display:flex;
             align-items:center;
             justify-content:space-between;
-            background:#fff;
         }
-        .ri:hover{
-            background:#e3f2fd !important;
-            transform:translateY(-2px);
-        }
-        .ri:active{
-            background:#bbdefb !important;
-            transform:scale(0.98);
-        }
-        .ri:last-child{border:none}
-        .ri::after{
-            content:">";
-            font-size:2.2rem;
-            color:var(--a);
-            font-weight:bold;
-            opacity:0.7;
-        }
+        .ri:hover{background:#e3f2fd}
+        .ri:active{background:#bbdefb;transform:scale(0.98)}
+        .ri::after{content:">";font-size:2rem;color:var(--a);font-weight:bold;opacity:0.7}
+        .n{font-weight:700;color:#1e293b;font-size:1.35rem}
+        .d{color:#64748b;font-size:1.1rem;margin-top:4px}
 
-        .n{font-weight:700;color:#1e293b;font-size:1.3rem}
-        .d{color:#64748b;font-size:1.1rem;margin-top:6px}
-
-        /* ผลลัพธ์ต่าง ๆ */
+        /* ผลลัพธ์ */
         #res{
             padding:24px;
             border-radius:16px;
-            font-size:1.15rem;
+            font-size:1.2rem;
             text-align:center;
             min-height:80px;
             display:flex;
@@ -139,49 +112,44 @@
             line-height:1.6;
             opacity:0;
             transform:scale(0.95);
-            transition:all .6s cubic-bezier(0.34,1.56,0.64,1);
+            transition:all .4s ease;
         }
         #res.visible{opacity:1;transform:scale(1)}
-
         .success{background:#e8f5e8;color:#155724;border:2px solid #c3e6cb}
         .error{background:#fdecea;color:#c62828;border:2px solid #ef9a9a}
         .loading{color:var(--p);background:#ebf3ff;border:2px dashed #90caf9}
         .info{background:#fffde7;color:#ff8f00;border:2px solid #ffe082}
 
-        /* การ์ดสำเร็จ */
+        /* การ์ดสำเร็จแบบเร็ว */
         .success-card{
             background:#fff;
             border-radius:20px;
-            padding:36px 24px;
+            padding:32px 24px;
             text-align:center;
-            box-shadow:0 30px 60px rgba(0,200,83,.3);
+            box-shadow:0 20px 50px rgba(0,200,83,.35);
             border:3px solid var(--success);
-            animation:pop 0.8s ease;
+            animation:pop 0.6s ease;
         }
         @keyframes pop{
-            0%{transform:scale(0.3) rotate(-8deg);opacity:0}
-            65%{transform:scale(1.15)}
+            0%{transform:scale(0.4);opacity:0}
+            70%{transform:scale(1.1)}
             100%{transform:scale(1)}
         }
         .success-icon{
-            width:110px;height:110px;
+            width:100px;height:100px;
             background:var(--success);
             color:#fff;
             border-radius:50%;
             display:flex;align-items:center;justify-content:center;
-            margin:0 auto 24px;
-            font-size:4rem;
-            box-shadow:0 15px 40px rgba(0,200,83,.5);
+            margin:0 auto 20px;
+            font-size:3.8rem;
         }
-        .success-name{font-size:2.3rem;font-weight:800;color:#155724;margin:8px 0}
-        .success-dept{font-size:1.4rem;color:#2e7d32;font-weight:600}
-        .success-msg{margin-top:20px;font-size:1.3rem;color:#1b5e20}
+        .success-name{font-size:2.2rem;font-weight:800;color:#155724}
+        .success-dept{font-size:1.35rem;color:#2e7d32;margin-top:8px}
 
         @media(max-width:480px){
-            #r{width:calc(100% - 20px)}
-            .ri{padding:28px 24px;min-height:100px}
-            .n{font-size:1.4rem}
-            .success-name{font-size:2.1rem}
+            #i{font-size:1.5rem;padding:24px}
+            .success-name{font-size:2rem}
         }
     </style>
 </head>
@@ -189,27 +157,50 @@
 <div class="c">
   <div class="h">
     <h2>เข้าร่วมกิจกรรม</h2>
-    <p>ให้ความรู้เกี่ยวกับกองทุนสำรองเลี้ยงชีพ</p>
+    <p>กองทุนสำรองเลี้ยงชีพ</p>
   </div>
   <div class="ct">
     <div class="sb">
-      <input type="text" id="i" placeholder="ค้นหาชื่อหรือรหัสพนักงาน..." autocomplete="off">
+      <input type="text" id="i" placeholder="พิมพ์ชื่อหรือรหัสพนักงาน..." autocomplete="off" autofocus>
       <ul id="r"></ul>
     </div>
-    <div id="res" class="visible info">กรุณาพิมพ์ชื่อหรือรหัสพนักงานเพื่อค้นหา</div>
+    <div id="res" class="visible info">พิมพ์ชื่อหรือรหัสพนักงานแล้วกด Enter หรือเลือกจากรายการ</div>
   </div>
 </div>
 
 <script>
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzb6vYis20nG_t3vVSqg8GoEi-N8dPWXMC1Vis_vWYW7duvdKnIFl0mfsx10KWqVoSJ/exec";
-
 const resDiv = document.getElementById('res');
 const input = document.getElementById('i');
 const list = document.getElementById('r');
 
+// ==== ความเร็วสุด ๆ สำหรับงานหน้างาน ====
+let lastSearch = 0;
+const MIN_DELAY = 120; // ค้นหาทันทีที่พิมพ์ (เร็วสุดที่ยังไม่ทำให้ server ล่ม)
+
 input.addEventListener('input', () => {
-  clearTimeout(window.searchTimeout);
-  window.searchTimeout = setTimeout(search, 300);
+  const now = Date.now();
+  if (now - lastSearch > MIN_DELAY) {
+    lastSearch = now;
+    search();
+  } else {
+    clearTimeout(window.st);
+    window.st = setTimeout(() => {
+      lastSearch = Date.now();
+      search();
+    }, MIN_DELAY);
+  }
+});
+
+// กด Enter แล้วเลือกอันแรกทันที (เร็วมากสำหรับสแกนบาร์โค้ดหรือพิมพ์รหัส)
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const firstItem = list.querySelector('.ri');
+    if (firstItem) {
+      e.preventDefault();
+      firstItem.click();
+    }
+  }
 });
 
 async function search() {
@@ -217,20 +208,19 @@ async function search() {
   list.innerHTML = '';
   list.classList.remove('show');
 
-  if (q.length < 2) {
-    showInfo('พิมพ์อย่างน้อย 2 ตัวอักษร');
+  if (q.length < 1) { // ลดเหลือ 1 ตัวอักษรก็ค้นได้เลย
+    showInfo('พิมพ์ชื่อหรือรหัสพนักงาน');
     return;
   }
-  showLoading('กำลังค้นหา...');
 
+  showLoading('กำลังค้นหา...');
   try {
     const r = await fetch(`${WEB_APP_URL}?action=search&q=${encodeURIComponent(q)}`);
     const data = await r.json();
-
     if (!data || data.length === 0) throw 'empty';
 
     list.innerHTML = '';
-    data.forEach(e => {
+    data.slice(0, 15).forEach(e => {  // แสดงแค่ 15 คนแรกเพื่อความเร็ว
       const li = document.createElement('li');
       li.className = 'ri';
       li.innerHTML = `
@@ -240,34 +230,40 @@ async function search() {
         </div>
       `;
       li.onclick = () => checkin(e.id, e.name, e.dept);
-      li.ontouchstart = () => {}; // ลดดีเลย์บนมือถือ
       list.appendChild(li);
     });
     list.classList.add('show');
-
   } catch(e) {
-    showError('ไม่พบข้อมูลหรือเชื่อมต่อไม่ได้');
+    showError('ไม่พบข้อมูล');
   }
 }
 
 async function checkin(id, name, dept) {
   list.classList.remove('show');
   input.value = name;
-  showLoading(`กำลังบันทึก<br><strong>${name}</strong>...`);
+  input.disabled = true;  // ป้องกันพิมพ์ซ้อน
+  showLoading(`กำลังบันทึก ${name}...`);
 
   try {
-    const r = await fetch(`${WEB_APP_URL}?action=checkin&id=${id}`);
+    const r = await fetch(`${WEB_APP_URL}?action=checkin&id=${id}&t=${Date.now()}`); // cache buster
     const result = await r.json();
 
     if (result.status === 'success') {
       showSuccessCard(name, dept);
-      input.value = '';
-      setTimeout(() => input.focus(), 2800);
+      // เร็วสุด! 900 ms ก็กลับมาพิมพ์คนต่อไปได้แล้ว
+      setTimeout(() => {
+        input.value = '';
+        input.disabled = false;
+        input.focus();
+        showInfo('พิมพ์ชื่อหรือรหัสพนักงานคนต่อไป');
+      }, 900);
     } else {
-      showError(result.message || 'ลงทะเบียนไม่สำเร็จ');
+      throw result.message || 'error';
     }
   } catch(e) {
     showError('บันทึกไม่สำเร็จ ลองใหม่');
+    input.disabled = false;
+    input.select();
   }
 }
 
@@ -278,21 +274,21 @@ function showSuccessCard(name, dept) {
   resDiv.innerHTML = `
     <div class="success-card">
       <div class="success-icon"><i class="fas fa-check"></i></div>
-      <div class="success-msg">ลงทะเบียนสำเร็จ!</div>
       <div class="success-name">${name}</div>
       <div class="success-dept">แผนก: ${dept}</div>
+      <div style="margin-top:12px;color:#2e7d32;font-size:1.1rem;">ลงทะเบียนสำเร็จ!</div>
     </div>
   `;
   resDiv.className = 'visible success';
 }
 
-// คลิกนอกกล่องก็หุบ
+// คลิกนอกก็หุบ
 document.addEventListener('click', e => {
   if (!e.target.closest('.sb')) list.classList.remove('show');
 });
 
+// เริ่มต้นทันที
 window.onload = () => input.focus();
 </script>
 </body>
 </html>
-
