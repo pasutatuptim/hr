@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เข้าร่วมกิจกรรม</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--p:#003087;--pl:#0044cc;--a:#0066ff;--b:#e2e8f0;--t:#1e293b;--tl:#64748b;--s:0 20px 40px rgba(0,48,135,.12)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Prompt',sans-serif;background:linear-gradient(135deg,#f0f4ff,#e6ecff);min-height:100vh;padding:20px 12px;display:flex;justify-content:center;align-items:flex-start}
+        .c{background:#fff;width:100%;max-width:480px;border-radius:20px;overflow:hidden;box-shadow:var(--s);border:1px solid rgba(0,48,135,.08)}
+        .h{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;padding:36px 24px;text-align:center}
+        .h h2{font-size:1.9rem;font-weight:700}
+        .h p{margin-top:10px;font-size:1.02rem;opacity:.95}
+        .ct{padding:32px 28px}
+        .sb{position:relative;margin-bottom:20px}
+        #i{width:100%;padding:19px 24px;font-size:1.15rem;border:2px solid var(--b);border-radius:16px;background:#fcfdff;transition:all .35s}
+        #i:focus{outline:none;border-color:var(--a);box-shadow:0 0 0 5px rgba(0,102,255,.15);transform:translateY(-2px);background:#fff}
+        }
+        #r{position:absolute;top:100%;left:0;right:0;background:#fff;border-radius:0 0 16px 16px;max-height:360px;overflow-y:auto;box-shadow:var(--s);border:2px solid var(--a);border-top:none;opacity:0;visibility:hidden;transform:translateY(-12px);transition:all .35s;z-index:10}
+        #r.show{opacity:1;visibility:visible;transform:translateY(0)}
+        .ri{padding:18px 24px;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:all .25s}
+        .ri:hover{background:linear-gradient(to right,#f0f7ff,#e8f1ff);padding-left:32px}
+        .ri:last-child{border:none;border-radius:0 0 14px 14px}
+        .n{font-weight:600;color:var(--t);font-size:1.1rem}
+        .d{color:var(--tl);font-size:.96rem;margin-top:6px}
+        #res{padding:20px;border-radius:14px;font-size:1.08rem;text-align:center;min-height:70px;display:flex;align-items:center;justify-content:center;font-weight:500;line-height:1.5;opacity:0;transition:all .5s}
+        #res.visible{opacity:1}
+        .success{background:linear-gradient(to right,#edf7ed,#e0f2e0);color:#2d6a2d;border:1px solid #c8e6c9}
+        .error{background:linear-gradient(to right,#fdecea,#fce0dd);color:#c62828;border:1px solid #ef9a9a}
+        .loading{color:var(--p);background:#ebf3ff;border:1px solid #90caf9}
+        .info{background:#fff8e1;color:#ff8f00;border:1px solid #ffe082}
+        @media(max-width:480px){.h{padding:30px 20px}.h h2{font-size:1.75rem}.ct{padding:28px 22px}}
+    </style>
+</head>
+<body>
+<div class="c">
+  <div class="h">
+    <h2>เข้าร่วมกิจกรรม</h2>
+    <p>พิมพ์ชื่อหรือรหัสพนักงานเพื่อลงทะเบียน</p>
+  </div>
+  <div class="ct">
+    <div class="sb">
+      <input type="text" id="i" placeholder="ค้นหาชื่อหรือรหัสพนักงาน..." autocomplete="off">
+      <ul id="r"></ul>
+    </div>
+    <div id="res" class="visible info">กรุณาพิมพ์ชื่อหรือรหัสพนักงานเพื่อค้นหา</div>
+  </div>
+</div>
+
+<script>
+// เปลี่ยนแค่บรรทัดนี้เป็น URL ของคุณ
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzb6vYis20nG_t3vVSqg8GoEi-N8dPWXMC1Vis_vWYW7duvdKnIFl0mfsx10KWqVoSJ/exec";
+
+const resDiv = document.getElementById('res');
+const input = document.getElementById('i');
+const list = document.getElementById('r');
+let t;
+
+input.addEventListener('input', () => {
+  clearTimeout(t);
+  t = setTimeout(search, 350);
+});
+
+async function search() {
+  const q = input.value.trim();
+  list.innerHTML = ''; list.classList.remove('show');
+  if (q.length < 2) { show('info','พิมพ์อย่างน้อย 2 ตัวอักษร'); return; }
+  show('loading','กำลังค้นหา...');
+
+  try {
+    const r = await fetch(`${WEB_APP_URL}?action=search&q=${encodeURIComponent(q)}`);
+    const data = await r.json();
+    if (data.length === 0) throw new Error('ไม่พบข้อมูล');
+    list.innerHTML = '';
+    data.forEach(e => {
+      const li = document.createElement('li');
+      li.className = 'ri';
+      li.innerHTML = `<div class="n">${e.name}</div><div class="d">รหัส: ${e.id} | แผนก: ${e.dept}</div>`;
+      li.onclick = () => checkin(e.id, e.name);
+      list.appendChild(li);
+    });
+    list.classList.add('show');
+  } catch(e) {
+    show('error', 'ไม่พบข้อมูลหรือเกิดข้อผิดพลาดในการเชื่อมต่อ');
+  }
+}
+
+async function checkin(id, name) {
+  list.classList.remove('show');
+  input.value = name;
+  show('loading', `กำลังบันทึก<br><strong>${name}</strong>...`);
+
+  try {
+    const r = await fetch(`${WEB_APP_URL}?action=checkin&id=${id}`);
+    const result = await r.json();
+    show(result.status, result.message);
+    if (result.status === 'success') {
+      input.value = '';
+      setTimeout(() => input.focus(), 800);
+    }
+  } catch(e) {
+    show('error', 'บันทึกไม่สำเร็จ กรุณาลองใหม่');
+  }
+}
+
+function show(status, msg) {
+  resDiv.innerHTML = msg;
+  resDiv.className = 'visible ' + status;
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.sb')) list.classList.remove('show');
+});
+
+window.onload = () => input.focus();
+</script>
+</body>
+</html>
