@@ -4,41 +4,192 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>เข้าร่วมกิจกรรม</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root{--p:#003087;--pl:#0044cc;--a:#0066ff;--b:#e2e8f0;--t:#1e293b;--tl:#64748b;--s:0 20px 40px rgba(0,48,135,.12)}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Prompt',sans-serif;background:linear-gradient(135deg,#f0f4ff,#e6ecff);min-height:100vh;padding:20px 12px;display:flex;justify-content:center;align-items:flex-start}
-        .c{background:#fff;width:100%;max-width:480px;border-radius:20px;overflow:hidden;box-shadow:var(--s);border:1px solid rgba(0,48,135,.08)}
-        .h{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;padding:36px 24px;text-align:center}
-        .h h2{font-size:1.9rem;font-weight:700}
-        .h p{margin-top:10px;font-size:1.02rem;opacity:.95}
-        .ct{padding:32px 28px}
-        .sb{position:relative;margin-bottom:20px}
-        #i{width:100%;padding:19px 24px;font-size:1.15rem;border:2px solid var(--b);border-radius:16px;background:#fcfdff;transition:all .35s}
-        #i:focus{outline:none;border-color:var(--a);box-shadow:0 0 0 5px rgba(0,102,255,.15);transform:translateY(-2px);background:#fff}
+        :root{
+            --p:#003087;
+            --pl:#0044cc;
+            --a:#0066ff;
+            --success:#00c853;
+            --shadow:0 25px 60px rgba(0,48,135,.22);
+            --radius:22px;
         }
-        #r{position:absolute;top:100%;left:0;right:0;background:#fff;border-radius:0 0 16px 16px;max-height:360px;overflow-y:auto;box-shadow:var(--s);border:2px solid var(--a);border-top:none;opacity:0;visibility:hidden;transform:translateY(-12px);transition:all .35s;z-index:10}
-        #r.show{opacity:1;visibility:visible;transform:translateY(0)}
-        .ri{padding:18px 24px;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:all .25s}
-        .ri:hover{background:linear-gradient(to right,#f0f7ff,#e8f1ff);padding-left:32px}
-        .ri:last-child{border:none;border-radius:0 0 14px 14px}
-        .n{font-weight:600;color:var(--t);font-size:1.1rem}
-        .d{color:var(--tl);font-size:.96rem;margin-top:6px}
-        #res{padding:20px;border-radius:14px;font-size:1.08rem;text-align:center;min-height:70px;display:flex;align-items:center;justify-content:center;font-weight:500;line-height:1.5;opacity:0;transition:all .5s}
-        #res.visible{opacity:1}
-        .success{background:linear-gradient(to right,#edf7ed,#e0f2e0);color:#2d6a2d;border:1px solid #c8e6c9}
-        .error{background:linear-gradient(to right,#fdecea,#fce0dd);color:#c62828;border:1px solid #ef9a9a}
-        .loading{color:var(--p);background:#ebf3ff;border:1px solid #90caf9}
-        .info{background:#fff8e1;color:#ff8f00;border:1px solid #ffe082}
-        @media(max-width:480px){.h{padding:30px 20px}.h h2{font-size:1.75rem}.ct{padding:28px 22px}}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:'Prompt',sans-serif;
+            background:linear-gradient(135deg,#f0f4ff,#e6ecff);
+            min-height:100vh;
+            padding:20px 12px;
+            display:flex;
+            justify-content:center;
+            align-items:flex-start;
+        }
+        .c{
+            background:#fff;
+            width:100%;
+            max-width:480px;
+            border-radius:var(--radius);
+            overflow:visible; /* สำคัญ! ต้อง visible เพื่อให้ dropdown โผล่ออกมาได้เต็มที่ */
+            box-shadow:var(--shadow);
+            position:relative;
+            z-index:1;
+        }
+        .h{
+            background:linear-gradient(135deg,var(--p),var(--pl));
+            color:#fff;
+            padding:40px 24px;
+            text-align:center;
+            border-radius:var(--radius) var(--radius) 0 0;
+        }
+        .h h2{font-size:2rem;font-weight:800}
+        .h p{margin-top:12px;font-size:1.1rem;opacity:.95}
+        .ct{padding:36px 28px 40px;position:relative}
+
+        .sb{position:relative;margin-bottom:28px}
+
+        #i{
+            width:100%;
+            padding:20px 24px;
+            font-size:1.2rem;
+            border:2px solid #e2e8f0;
+            border-radius:18px;
+            background:#fff;
+            transition:all .3s;
+        }
+        #i:focus{
+            outline:none;
+            border-color:var(--a);
+            box-shadow:0 0 0 6px rgba(0,102,255,.18);
+        }
+
+        /* Dropdown ใหม่ – โผล่ทับทุกอย่าง ไม่บังแน่นอน */
+        #r{
+            position:absolute;
+            top:100%;
+            left:50%;
+            transform:translateX(-50%);
+            width:calc(100% - 40px);     /* กว้างเกือบเต็มจอ */
+            max-height:65vh;             /* สูงสุด 65% ของหน้าจอ */
+            background:#fff;
+            border-radius:20px;
+            box-shadow:var(--shadow);
+            border:3px solid var(--a);
+            overflow:hidden;
+            opacity:0;
+            visibility:hidden;
+            transform:translateX(-50%) translateY(-20px) scale(0.94);
+            transition:all .4s cubic-bezier(0.34,1.56,0.64,1);
+            z-index:9999;                /* อยู่บนสุดสุด */
+        }
+        #r.show{
+            opacity:1;
+            visibility:visible;
+            transform:translateX(-50%) translateY(10px) scale(1);
+        }
+
+        /* Scroll ลื่น + มีแถบเลื่อนสวย */
+        #r::-webkit-scrollbar{width:10px}
+        #r::-webkit-scrollbar-track{background:#f1f5f9;border-radius:10px}
+        #r::-webkit-scrollbar-thumb{background:var(--a);border-radius:10px}
+
+        .ri{
+            padding:26px 28px;
+            min-height:96px;
+            border-bottom:1px solid #e2e8f0;
+            cursor:pointer;
+            transition:all .25s;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            background:#fff;
+        }
+        .ri:hover{
+            background:#e3f2fd !important;
+            transform:translateY(-2px);
+        }
+        .ri:active{
+            background:#bbdefb !important;
+            transform:scale(0.98);
+        }
+        .ri:last-child{border:none}
+        .ri::after{
+            content:">";
+            font-size:2.2rem;
+            color:var(--a);
+            font-weight:bold;
+            opacity:0.7;
+        }
+
+        .n{font-weight:700;color:#1e293b;font-size:1.3rem}
+        .d{color:#64748b;font-size:1.1rem;margin-top:6px}
+
+        /* ผลลัพธ์ต่าง ๆ */
+        #res{
+            padding:24px;
+            border-radius:16px;
+            font-size:1.15rem;
+            text-align:center;
+            min-height:80px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            font-weight:600;
+            line-height:1.6;
+            opacity:0;
+            transform:scale(0.95);
+            transition:all .6s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #res.visible{opacity:1;transform:scale(1)}
+
+        .success{background:#e8f5e8;color:#155724;border:2px solid #c3e6cb}
+        .error{background:#fdecea;color:#c62828;border:2px solid #ef9a9a}
+        .loading{color:var(--p);background:#ebf3ff;border:2px dashed #90caf9}
+        .info{background:#fffde7;color:#ff8f00;border:2px solid #ffe082}
+
+        /* การ์ดสำเร็จ */
+        .success-card{
+            background:#fff;
+            border-radius:20px;
+            padding:36px 24px;
+            text-align:center;
+            box-shadow:0 30px 60px rgba(0,200,83,.3);
+            border:3px solid var(--success);
+            animation:pop 0.8s ease;
+        }
+        @keyframes pop{
+            0%{transform:scale(0.3) rotate(-8deg);opacity:0}
+            65%{transform:scale(1.15)}
+            100%{transform:scale(1)}
+        }
+        .success-icon{
+            width:110px;height:110px;
+            background:var(--success);
+            color:#fff;
+            border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            margin:0 auto 24px;
+            font-size:4rem;
+            box-shadow:0 15px 40px rgba(0,200,83,.5);
+        }
+        .success-name{font-size:2.3rem;font-weight:800;color:#155724;margin:8px 0}
+        .success-dept{font-size:1.4rem;color:#2e7d32;font-weight:600}
+        .success-msg{margin-top:20px;font-size:1.3rem;color:#1b5e20}
+
+        @media(max-width:480px){
+            #r{width:calc(100% - 20px)}
+            .ri{padding:28px 24px;min-height:100px}
+            .n{font-size:1.4rem}
+            .success-name{font-size:2.1rem}
+        }
     </style>
 </head>
 <body>
 <div class="c">
   <div class="h">
     <h2>เข้าร่วมกิจกรรม</h2>
-    <p>เข้าร่วมกิจกรรมให้ความรู้เกี่ยวกับกองทุนสำรองเลี้ยงชีพ</p>
+    <p>พิมพ์ชื่อหรือรหัสพนักงานเพื่อลงทะเบียนเข้างาน</p>
   </div>
   <div class="ct">
     <div class="sb">
@@ -50,66 +201,92 @@
 </div>
 
 <script>
-// เปลี่ยนแค่บรรทัดนี้เป็น URL ของคุณ
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzb6vYis20nG_t3vVSqg8GoEi-N8dPWXMC1Vis_vWYW7duvdKnIFl0mfsx10KWqVoSJ/exec";
 
 const resDiv = document.getElementById('res');
 const input = document.getElementById('i');
 const list = document.getElementById('r');
-let t;
 
 input.addEventListener('input', () => {
-  clearTimeout(t);
-  t = setTimeout(search, 350);
+  clearTimeout(window.searchTimeout);
+  window.searchTimeout = setTimeout(search, 300);
 });
 
 async function search() {
   const q = input.value.trim();
-  list.innerHTML = ''; list.classList.remove('show');
-  if (q.length < 2) { show('info','พิมพ์อย่างน้อย 2 ตัวอักษร'); return; }
-  show('loading','กำลังค้นหา...');
+  list.innerHTML = '';
+  list.classList.remove('show');
+
+  if (q.length < 2) {
+    showInfo('พิมพ์อย่างน้อย 2 ตัวอักษร');
+    return;
+  }
+  showLoading('กำลังค้นหา...');
 
   try {
     const r = await fetch(`${WEB_APP_URL}?action=search&q=${encodeURIComponent(q)}`);
     const data = await r.json();
-    if (data.length === 0) throw new Error('ไม่พบข้อมูล');
+
+    if (!data || data.length === 0) throw 'empty';
+
     list.innerHTML = '';
     data.forEach(e => {
       const li = document.createElement('li');
       li.className = 'ri';
-      li.innerHTML = `<div class="n">${e.name}</div><div class="d">รหัส: ${e.id} | แผนก: ${e.dept}</div>`;
-      li.onclick = () => checkin(e.id, e.name);
+      li.innerHTML = `
+        <div>
+          <div class="n">${e.name}</div>
+          <div class="d">รหัส: ${e.id} | แผนก: ${e.dept}</div>
+        </div>
+      `;
+      li.onclick = () => checkin(e.id, e.name, e.dept);
+      li.ontouchstart = () => {}; // ลดดีเลย์บนมือถือ
       list.appendChild(li);
     });
     list.classList.add('show');
+
   } catch(e) {
-    show('error', 'ไม่พบข้อมูลหรือเกิดข้อผิดพลาดในการเชื่อมต่อ');
+    showError('ไม่พบข้อมูลหรือเชื่อมต่อไม่ได้');
   }
 }
 
-async function checkin(id, name) {
+async function checkin(id, name, dept) {
   list.classList.remove('show');
   input.value = name;
-  show('loading', `กำลังบันทึก<br><strong>${name}</strong>...`);
+  showLoading(`กำลังบันทึก<br><strong>${name}</strong>...`);
 
   try {
     const r = await fetch(`${WEB_APP_URL}?action=checkin&id=${id}`);
     const result = await r.json();
-    show(result.status, result.message);
+
     if (result.status === 'success') {
+      showSuccessCard(name, dept);
       input.value = '';
-      setTimeout(() => input.focus(), 800);
+      setTimeout(() => input.focus(), 2800);
+    } else {
+      showError(result.message || 'ลงทะเบียนไม่สำเร็จ');
     }
   } catch(e) {
-    show('error', 'บันทึกไม่สำเร็จ กรุณาลองใหม่');
+    showError('บันทึกไม่สำเร็จ ลองใหม่');
   }
 }
 
-function show(status, msg) {
-  resDiv.innerHTML = msg;
-  resDiv.className = 'visible ' + status;
+function showInfo(m){ resDiv.innerHTML = m; resDiv.className = 'visible info'; }
+function showLoading(m){ resDiv.innerHTML = m; resDiv.className = 'visible loading'; }
+function showError(m){ resDiv.innerHTML = m; resDiv.className = 'visible error'; }
+function showSuccessCard(name, dept) {
+  resDiv.innerHTML = `
+    <div class="success-card">
+      <div class="success-icon"><i class="fas fa-check"></i></div>
+      <div class="success-msg">ลงทะเบียนสำเร็จ!</div>
+      <div class="success-name">${name}</div>
+      <div class="success-dept">แผนก: ${dept}</div>
+    </div>
+  `;
+  resDiv.className = 'visible success';
 }
 
+// คลิกนอกกล่องก็หุบ
 document.addEventListener('click', e => {
   if (!e.target.closest('.sb')) list.classList.remove('show');
 });
@@ -117,5 +294,4 @@ document.addEventListener('click', e => {
 window.onload = () => input.focus();
 </script>
 </body>
-
 </html>
