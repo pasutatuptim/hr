@@ -164,7 +164,7 @@
       <input type="text" id="i" placeholder="พิมพ์ชื่อหรือรหัสพนักงาน..." autocomplete="off" autofocus>
       <ul id="r"></ul>
     </div>
-    <div id="res" class="visible info">พิมพ์ชื่อหรือรหัสพนักงานแล้วกด Enter หรือเลือกจากรายการ</div>
+    <div id="res" class="visible info">พิมพ์รหัสหรือชื่อพนักงานแล้วกดเลือกจากรายการ</div>
   </div>
 </div>
 
@@ -208,7 +208,7 @@ async function search() {
   list.innerHTML = '';
   list.classList.remove('show');
 
-  if (q.length < 1) { // ลดเหลือ 1 ตัวอักษรก็ค้นได้เลย
+  if (q.length < 4) { // ลดเหลือ 1 ตัวอักษรก็ค้นได้เลย
     showInfo('พิมพ์ชื่อหรือรหัสพนักงาน');
     return;
   }
@@ -292,3 +292,4 @@ window.onload = () => input.focus();
 </script>
 </body>
 </html>
+
