@@ -14,10 +14,20 @@
         .ct{padding:30px 25px 40px}
         #i{width:100%;padding:24px 20px;font-size:1.7rem;border:3px solid #ddd;border-radius:20px;transition:border .15s}
         #i:focus{outline:none;border-color:#0066ff;box-shadow:0 0 0 5px rgba(0,102,255,.25)}
-        #confirmBtn{margin-top:20px;width:100%;padding:24px;font-size:1.9rem;font-weight:800;background:#00c853;color:white;border:none;border-radius:20px;cursor:pointer;opacity:0.3;
-            transition:all .2s;will-change:transform,opacity}
-        #confirmBtn.active{opacity:1;transform:translateY(-3px);box-shadow:0 15px 40px rgba(0,200,83,.5)}
+        #confirmBtn{
+            margin-top:20px;width:100%;padding:20px 24px;font-size:1.55rem;font-weight:800;
+            background:#00c853;color:white;border:none;border-radius:20px;cursor:pointer;
+            opacity:0.3;transition:all .2s;will-change:transform,opacity;
+            line-height:1.4;text-align:center;
+        }
+        #confirmBtn.active{
+            opacity:1;transform:translateY(-3px);box-shadow:0 15px 40px rgba(0,200,83,.5)
+        }
         #confirmBtn:active{transform:scale(0.96)}
+        #confirmBtn .big{font-size:1.9rem;font-weight:800}
+        #confirmBtn .mid{font-size:1.45rem;margin:4px 0 2px}
+        #confirmBtn .small{font-size:1.3rem;opacity:0.9}
+
         #r{position:absolute;top:100%;left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-height:58vh;background:#fff;
             border-radius:18px;border:4px solid #0066ff;box-shadow:0 20px 50px rgba(0,0,0,.3);overflow-y:auto;z-index:9999;
             opacity:0;visibility:hidden;will-change:transform,opacity;transition:transform .15s ease,opacity .15s}
@@ -49,18 +59,16 @@
 </div>
 
 <script>
-// ====== เวอร์ชันเร็วที่สุดในจักรวาล ======
+// ====== เวอร์ชันเร็วที่สุดในจักรวาล (อัปเดตปุ่มสวยขึ้น) ======
 const URL = "https://script.google.com/macros/s/AKfycbzb6vYis20nG_t3vVSqg8GoEi-N8dPWXMC1Vis_vWYW7duvdKnIFl0mfsx10KWqVoSJ/exec";
 const input = document.getElementById('i');
 const list = document.getElementById('r');
 const btn = document.getElementById('confirmBtn');
 const res = document.getElementById('res');
-
 let selected = null;
-const cache = new Map(); // cache คำค้น 5 วินาที
+const cache = new Map();
 
-input.addEventListener('input', () => search()); // 0ms debounce!
-
+input.addEventListener('input', () => search());
 input.addEventListener('keydown', e => {
   if (e.key === 'Enter' && selected) {
     e.preventDefault();
@@ -76,11 +84,9 @@ async function search() {
   list.classList.remove('show');
   selected = null;
   btn.classList.remove('active');
-  btn.textContent = "ลงทะเบียน";
+  btn.innerHTML = "ลงทะเบียน";
+  if (!q) { res.textContent = "พิมพ์ชื่อหรือรหัสพนักงาน"; res.className = "info"; return; }
 
-  if (!q) { res.textContent = "พิมพ์ชื่อหรือรหัส"; res.className = "info"; return; }
-
-  // ใช้ cache
   const cacheKey = q.toLowerCase();
   if (cache.has(cacheKey)) {
     renderResults(cache.get(cacheKey));
@@ -94,7 +100,7 @@ async function search() {
     const r = await fetch(`${URL}?action=search&q=${encodeURIComponent(q)}&t=${Date.now()}`);
     const data = await r.json();
     cache.set(cacheKey, data);
-    setTimeout(() => cache.delete(cacheKey), 5000); // cache 5 วิ
+    setTimeout(() => cache.delete(cacheKey), 5000);
     renderResults(data);
   } catch(e) {
     res.textContent = "ไม่พบหรือเน็ตมีปัญหา";
@@ -108,16 +114,15 @@ function renderResults(data) {
     res.className = "error";
     return;
   }
-
   list.innerHTML = '';
-  data.slice(0,8).forEach(p => {  // แสดงแค่ 8 คนเร็วสุด
+  data.slice(0,8).forEach(p => {
     const li = document.createElement('li');
     li.className = 'ri';
     li.innerHTML = `<div class="n">${p.name}</div><div class="d">รหัส ${p.id} • ${p.dept}</div>`;
     li.onclick = () => selectPerson(p, li);
     list.appendChild(li);
   });
-  list.className = 'show';
+  list.classList.add('show');
   res.textContent = `พบ ${data.length} คน ▸ แตะชื่อแล้วกดปุ่มเขียว`;
   res.className = "info";
 }
@@ -125,18 +130,27 @@ function renderResults(data) {
 function selectPerson(p, el) {
   selected = p;
   input.value = p.name;
+
+  // ลบ selected เก่า
   list.querySelectorAll('.ri').forEach(x => x.classList.remove('selected'));
   el.classList.add('selected');
   list.classList.remove('show');
+
+  // ปุ่มเขียว แสดง 3 บรรทัดสวย ๆ
+  btn.innerHTML = `
+    <div class="big">กดลงทะเบียน</div>
+    <div class="mid">${p.name}</div>
+    <div class="small">รหัส ${p.id}</div>
+  `;
   btn.classList.add('active');
-  btn.innerHTML = `ลงทะเบียน: ${p.name.split(' ')[0]} (${p.id})`;
+
   res.innerHTML = `<strong>เลือกแล้ว:</strong> ${p.name} • ${p.dept}`;
   res.className = "success";
 }
 
 async function checkin(id, name, dept) {
   btn.disabled = true;
-  btn.textContent = "กำลังบันทึก...";
+  btn.innerHTML = "กำลังบันทึก...";
   res.innerHTML = `บันทึก ${name}...`;
   res.className = "loading";
 
@@ -148,14 +162,13 @@ async function checkin(id, name, dept) {
                        <div style="font-size:2rem;font-weight:800;margin:10px 0">${name}</div>
                        <div style="font-size:1.4rem">ลงทะเบียนสำเร็จ!</div>`;
       res.className = "success";
-
-      setTimeout(resetForm, 450); // เร็วสุด 0.45 วินาที!
-    } else throw json.message;
+      setTimeout(resetForm, 450);
+    } else throw json.message || 'error';
   } catch(e) {
     res.textContent = "ผิดพลาด ลองใหม่";
     res.className = "error";
     btn.disabled = false;
-    btn.textContent = "ลงทะเบียน";
+    btn.innerHTML = "ลงทะเบียน";
   }
 }
 
@@ -163,16 +176,18 @@ function resetForm() {
   input.value = '';
   selected = null;
   btn.classList.remove('active');
-  btn.textContent = "ลงทะเบียน";
+  btn.innerHTML = "ลงทะเบียน";
   btn.disabled = false;
   res.textContent = "พิมพ์ชื่อหรือรหัสพนักงาน";
   res.className = "info";
   input.focus();
 }
 
-// ปิด dropdown นอกพื้นที่
+// ปิด dropdown เมื่อคลิกนอกพื้นที่
 document.addEventListener('click', e => {
-  if (!e.target.closest('#i') && !e.target.closest('#r')) list.classList.remove('show');
+  if (!e.target.closest('#i') && !e.target.closest('#r')) {
+    list.classList.remove('show');
+  }
 });
 </script>
 </body>
