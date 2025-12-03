@@ -7,38 +7,84 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@600;800&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Prompt',sans-serif;background:#f5f8ff;display:flex;justify-content:center;padding:15px 10px;min-height:100vh}
-        .c{background:#fff;max-width:500px;width:100%;border-radius:24px;box-shadow:0 20px 50px rgba(0,48,135,.25);overflow:hidden}
-        .h{background:linear-gradient(135deg,#003087,#0052cc);color:#fff;padding:35px 20px;text-align:center}
-        .h h2{font-size:2.2rem;font-weight:800}
-        .ct{padding:30px 25px 40px}
-        #i{width:100%;padding:24px 20px;font-size:1.7rem;border:3px solid #ddd;border-radius:20px;transition:border .15s}
-        #i:focus{outline:none;border-color:#0066ff;box-shadow:0 0 0 5px rgba(0,102,255,.25)}
+        body{font-family:'Prompt',sans-serif;background:#f5f8ff;display:flex;justify-content:center;align-items:center;padding:15px 10px;min-height:100vh}
+        .c{background:#fff;max-width:500px;width:100%;border-radius:28px;box-shadow:0 25px 60px rgba(0,48,135,.3);overflow:hidden}
+        .h{background:linear-gradient(135deg,#003087,#0052cc);color:#fff;padding:40px 20px 35px;text-align:center}
+        .h h2{font-size:2.3rem;font-weight:800}
+        .ct{padding:35px 28px 45px}
+        #i{width:100%;padding:26px 20px;font-size:1.75rem;border:3px solid #ddd;border-radius:22px;transition:all .2s}
+        #i:focus{outline:none;border-color:#0066ff;box-shadow:0 0 0 6px rgba(0,102,255,.25)}
+
+        /* ปุ่มลงทะเบียนสุดพรีเมียม */
         #confirmBtn{
-            margin-top:20px;width:100%;padding:20px 24px;font-size:1.55rem;font-weight:800;
-            background:#00c853;color:white;border:none;border-radius:20px;cursor:pointer;
-            opacity:0.3;transition:all .2s;will-change:transform,opacity;
-            line-height:1.4;text-align:center;
+            margin-top:28px;
+            width:100%;
+            padding:28px 20px;
+            font-family:'Prompt',sans-serif;
+            font-weight:800;
+            font-size:1.7rem;
+            background:#00c853;
+            color:white;
+            border:none;
+            border-radius:24px;
+            cursor:pointer;
+            position:relative;
+            overflow:hidden;
+            opacity:0.35;
+            transition:all .25s cubic-bezier(0.4,0,0.2,1);
+            box-shadow:0 8px 25px rgba(0,200,83,.4);
         }
         #confirmBtn.active{
-            opacity:1;transform:translateY(-3px);box-shadow:0 15px 40px rgba(0,200,83,.5)
+            opacity:1;
+            transform:translateY(-4px);
+            box-shadow:0 20px 50px rgba(0,200,83,.6);
         }
-        #confirmBtn:active{transform:scale(0.96)}
-        #confirmBtn .big{font-size:1.9rem;font-weight:800}
-        #confirmBtn .mid{font-size:1.45rem;margin:4px 0 2px}
-        #confirmBtn .small{font-size:1.3rem;opacity:0.9}
+        #confirmBtn:active{transform:scale(0.97)}
+
+        /* Ripple effect */
+        .ripple{
+            position:absolute;
+            border-radius:50%;
+            background:rgba(255,255,255,0.6);
+            transform:scale(0);
+            animation:rippleAnim 0.6s ease-out;
+            pointer-events:none;
+        }
+        @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+        /* เนื้อในปุ่ม */
+        .btn-content{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            line-height:1.4;
+            position:relative;
+            z-index:2;
+        }
+        .btn-big{font-size:2rem;margin-bottom:6px}
+        .btn-mid{font-size:1.65rem;font-weight:800}
+        .btn-small{font-size:1.35rem;opacity:0.95}
+
+        /* Spinner */
+        .spinner{
+            width:32px;height:32px;border:4px solid #fff;border-top-color:transparent;
+            border-radius:50%;animation:spin 1s linear infinite;
+            margin-bottom:12px;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
 
         #r{position:absolute;top:100%;left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-height:58vh;background:#fff;
-            border-radius:18px;border:4px solid #0066ff;box-shadow:0 20px 50px rgba(0,0,0,.3);overflow-y:auto;z-index:9999;
-            opacity:0;visibility:hidden;will-change:transform,opacity;transition:transform .15s ease,opacity .15s}
-        #r.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(6px)}
-        .ri{padding:22px 26px;border-bottom:1px solid #eee;cursor:pointer;transition:background .1s}
+            border-radius:20px;border:4px solid #0066ff;box-shadow:0 25px 60px rgba(0,0,0,.35);overflow-y:auto;z-index:9999;
+            opacity:0;visibility:hidden;transition:all .2s}
+        #r.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(8px)}
+        .ri{padding:24px 28px;border-bottom:1px solid #eee;cursor:pointer;transition:.15s}
         .ri:hover{background:#e3f2fd}
         .ri:active{background:#bbdefb}
-        .ri.selected{background:#0066ff!important;color:white}
-        .n{font-size:1.45rem;font-weight:800}
-        .d{font-size:1.2rem;margin-top:4px;opacity:0.9}
-        #res{margin-top:25px;padding:20px;border-radius:16px;text-align:center;font-size:1.3rem;font-weight:600;min-height:70px}
+        .ri.selected{background:#0066ff;color:white}
+        .n{font-size:1.5rem;font-weight:800}
+        .d{font-size:1.25rem;margin-top:5px;opacity:0.9}
+
+        #res{margin-top:28px;padding:22px;border-radius:18px;text-align:center;font-size:1.4rem;font-weight:600;min-height:80px}
         .info{background:#fff8e1;color:#ff6d00;border:2px solid #ffe082}
         .success{background:#e8f5e8;color:#155724;border:2px solid #c3e6cb}
         .error{background:#fdecea;color:#c62828;border:2px solid #ef9a9a}
@@ -53,13 +99,18 @@
       <input type="text" id="i" placeholder="ชื่อหรือรหัสพนักงาน" autocomplete="off" autofocus>
       <ul id="r"></ul>
     </div>
-    <button id="confirmBtn">ลงทะเบียน</button>
+
+    <button id="confirmBtn">
+      <div class="btn-content">
+        <div style="font-size:1.8rem">ลงทะเบียน</div>
+      </div>
+    </button>
+
     <div id="res" class="info">พิมพ์ชื่อหรือรหัสพนักงาน</div>
   </div>
 </div>
 
 <script>
-// ====== เวอร์ชันเร็วที่สุดในจักรวาล (อัปเดตปุ่มสวยขึ้น) ======
 const URL = "https://script.google.com/macros/s/AKfycbzb6vYis20nG_t3vVSqg8GoEi-N8dPWXMC1Vis_vWYW7duvdKnIFl0mfsx10KWqVoSJ/exec";
 const input = document.getElementById('i');
 const list = document.getElementById('r');
@@ -68,126 +119,123 @@ const res = document.getElementById('res');
 let selected = null;
 const cache = new Map();
 
+// เสียงติ๊งสำเร็จ (เบา ๆ)
+const successSound = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
+
 input.addEventListener('input', () => search());
-input.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && selected) {
-    e.preventDefault();
-    btn.click();
-  }
-});
+input.addEventListener('keydown', e => { if(e.key==='Enter'&&selected) btn.click(); });
 
 btn.onclick = () => selected && checkin(selected.id, selected.name, selected.dept);
 
+// Ripple effect
+btn.addEventListener('click', function(e) {
+  if(!selected) return;
+  const ripple = document.createElement('span');
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x = e.clientX - rect.left - size/2;
+  const y = e.clientY - rect.top - size/2;
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = x + 'px';
+  ripple.style.top = y + 'px';
+  ripple.classList.add('ripple');
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
+
 async function search() {
   const q = input.value.trim();
-  list.innerHTML = '';
-  list.classList.remove('show');
-  selected = null;
-  btn.classList.remove('active');
-  btn.innerHTML = "ลงทะเบียน";
-  if (!q) { res.textContent = "พิมพ์ชื่อหรือรหัสพนักงาน"; res.className = "info"; return; }
+  list.innerHTML = ''; list.classList.remove('show');
+  selected = null; btn.classList.remove('active');
+  btn.innerHTML = `<div class="btn-content"><div style="font-size:1.8rem">ลงทะเบียน</div></div>`;
+  if(!q){ res.textContent="พิมพ์ชื่อหรือรหัสพนักงาน"; res.className="info"; return;}
 
-  const cacheKey = q.toLowerCase();
-  if (cache.has(cacheKey)) {
-    renderResults(cache.get(cacheKey));
-    return;
-  }
+  const key = q.toLowerCase();
+  if(cache.has(key)){ renderResults(cache.get(key)); return;}
 
-  res.textContent = "กำลังค้นหา...";
-  res.className = "loading";
-
-  try {
+  res.textContent="กำลังค้นหา..."; res.className="loading";
+  try{
     const r = await fetch(`${URL}?action=search&q=${encodeURIComponent(q)}&t=${Date.now()}`);
     const data = await r.json();
-    cache.set(cacheKey, data);
-    setTimeout(() => cache.delete(cacheKey), 5000);
+    cache.set(key,data);
+    setTimeout(()=>cache.delete(key),5000);
     renderResults(data);
-  } catch(e) {
-    res.textContent = "ไม่พบหรือเน็ตมีปัญหา";
-    res.className = "error";
+  }catch{
+    res.textContent="ไม่พบหรือเน็ตมีปัญหา"; res.className="error";
   }
 }
 
-function renderResults(data) {
-  if (!data || data.length === 0) {
-    res.textContent = "ไม่พบข้อมูล";
-    res.className = "error";
-    return;
+function renderResults(data){
+  if(!data || data.length===0){
+    res.textContent="ไม่พบข้อมูล"; res.className="error"; return;
   }
-  list.innerHTML = '';
-  data.slice(0,8).forEach(p => {
-    const li = document.createElement('li');
-    li.className = 'ri';
-    li.innerHTML = `<div class="n">${p.name}</div><div class="d">รหัส ${p.id} • ${p.dept}</div>`;
-    li.onclick = () => selectPerson(p, li);
+  list.innerHTML='';
+  data.slice(0,8).forEach(p=>{
+    const li=document.createElement('li'); li.className='ri';
+    li.innerHTML=`<div class="n">${p.name}</div><div class="d">รหัส ${p.id} • ${p.dept}</div>`;
+    li.onclick=()=>selectPerson(p,li);
     list.appendChild(li);
   });
   list.classList.add('show');
-  res.textContent = `พบ ${data.length} คน ▸ แตะชื่อแล้วกดปุ่มเขียว`;
-  res.className = "info";
+  res.textContent=`พบ ${data.length} คน ▸ แตะชื่อแล้วกดปุ่มเขียว`; res.className="info";
 }
 
-function selectPerson(p, el) {
+function selectPerson(p, el){
   selected = p;
   input.value = p.name;
-
-  // ลบ selected เก่า
-  list.querySelectorAll('.ri').forEach(x => x.classList.remove('selected'));
+  list.querySelectorAll('.ri').forEach(x=>x.classList.remove('selected'));
   el.classList.add('selected');
   list.classList.remove('show');
 
-  // ปุ่มเขียว แสดง 3 บรรทัดสวย ๆ
+  // ปุ่มสุดพรีเมียม
   btn.innerHTML = `
-    <div class="big">กดลงทะเบียน</div>
-    <div class="mid">${p.name}</div>
-    <div class="small">รหัส ${p.id}</div>
+    <div class="btn-content">
+      <div class="btn-big">ลงทะเบียน</div>
+      <div class="btn-mid">${p.name}</div>
+      <div class="btn-small">รหัส ${p.id}</div>
+    </div>
   `;
   btn.classList.add('active');
-
   res.innerHTML = `<strong>เลือกแล้ว:</strong> ${p.name} • ${p.dept}`;
-  res.className = "success";
+  res.className="success";
 }
 
-async function checkin(id, name, dept) {
-  btn.disabled = true;
-  btn.innerHTML = "กำลังบันทึก...";
-  res.innerHTML = `บันทึก ${name}...`;
-  res.className = "loading";
+async function checkin(id, name, dept){
+  btn.disabled=true;
+  btn.innerHTML = `<div class="spinner"></div><div>กำลังบันทึก...</div>`;
+  res.innerHTML = `กำลังบันทึก ${name}...`; res.className="loading";
 
-  try {
+  try{
     const r = await fetch(`${URL}?action=checkin&id=${id}&t=${Date.now()}`);
     const json = await r.json();
-    if (json.status === 'success') {
-      res.innerHTML = `<div style="font-size:4.5rem;color:#00c853">✓</div>
-                       <div style="font-size:2rem;font-weight:800;margin:10px 0">${name}</div>
-                       <div style="font-size:1.4rem">ลงทะเบียนสำเร็จ!</div>`;
-      res.className = "success";
-      setTimeout(resetForm, 450);
-    } else throw json.message || 'error';
-  } catch(e) {
-    res.textContent = "ผิดพลาด ลองใหม่";
-    res.className = "error";
-    btn.disabled = false;
-    btn.innerHTML = "ลงทะเบียน";
+    if(json.status==='success'){
+      successSound.play().catch(()=>{});
+      res.innerHTML = `
+        <div style="font-size:5.5rem;color:#00c853;margin:10px 0">Checkmark</div>
+        <div style="font-size:2.4rem;font-weight:800">${name}</div>
+        <div style="font-size:1.6rem;margin-top:8px">ลงทะเบียนสำเร็จ!</div>
+      `;
+      res.className="success";
+      setTimeout(resetForm, 600);
+    }else throw json.message;
+  }catch{
+    res.textContent="ผิดพลาด ลองใหม่"; res.className="error";
+    btn.disabled=false;
+    btn.innerHTML = `<div class="btn-content"><div style="font-size:1.8rem">ลงทะเบียน</div></div>`;
   }
 }
 
-function resetForm() {
-  input.value = '';
-  selected = null;
+function resetForm(){
+  input.value=''; selected=null;
   btn.classList.remove('active');
-  btn.innerHTML = "ลงทะเบียน";
-  btn.disabled = false;
-  res.textContent = "พิมพ์ชื่อหรือรหัสพนักงาน";
-  res.className = "info";
+  btn.innerHTML = `<div class="btn-content"><div style="font-size:1.8rem">ลงทะเบียน</div></div>`;
+  btn.disabled=false;
+  res.textContent="พิมพ์ชื่อหรือรหัสพนักงาน"; res.className="info";
   input.focus();
 }
 
-// ปิด dropdown เมื่อคลิกนอกพื้นที่
-document.addEventListener('click', e => {
-  if (!e.target.closest('#i') && !e.target.closest('#r')) {
-    list.classList.remove('show');
-  }
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#i') && !e.target.closest('#r')) list.classList.remove('show');
 });
 </script>
 </body>
