@@ -294,7 +294,7 @@ async function checkin(id, name, dept) {
             input.disabled = false;
             input.focus();
             showInfo('พิมพ์ชื่อหรือรหัสพนักงานคนต่อไป');
-        }, 1500); // เพิ่มเวลาเป็น 1.5 วินาที เพื่อให้เห็นผลลัพธ์ชัดเจนขึ้น
+        }, 2000); // เพิ่มเวลาเป็น 1.5 วินาที เพื่อให้เห็นผลลัพธ์ชัดเจนขึ้น
 
     } catch (e) {
         // This handles network errors or generic 'error' messages thrown above
@@ -344,3 +344,4 @@ window.onload = () => input.focus();
 </script>
 </body>
 </html>
+
