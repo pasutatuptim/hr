@@ -12,6 +12,7 @@
             --pl:#0044cc;
             --a:#0066ff;
             --success:#00c853;
+            --warning:#ff9800; /* สีใหม่สำหรับ Warning */
             --shadow:0 25px 60px rgba(0,48,135,.22);
             --radius:22px;
         }
@@ -93,7 +94,7 @@
         }
         .ri:hover{background:#e3f2fd}
         .ri:active{background:#bbdefb;transform:scale(0.98)}
-        .ri::after{content:">";font-size:2rem;color:var(--a);font-weight:bold;opacity:0.7}
+        .ri::after{content:"\f0a9"; font-family:'Font Awesome 6 Free'; font-weight:900; font-size:1.5rem;color:var(--a);opacity:0.7}
         .n{font-weight:700;color:#1e293b;font-size:1.35rem}
         .d{color:#64748b;font-size:1.1rem;margin-top:4px}
 
@@ -120,56 +121,78 @@
         .loading{color:var(--p);background:#ebf3ff;border:2px dashed #90caf9}
         .info{background:#fffde7;color:#ff8f00;border:2px solid #ffe082}
 
-        /* การ์ดสำเร็จแบบเร็ว */
-        .success-card{
+        /* การ์ดสำเร็จ/เตือนซ้ำ */
+        .result-card{
             background:#fff;
             border-radius:20px;
             padding:32px 24px;
             text-align:center;
-            box-shadow:0 20px 50px rgba(0,200,83,.35);
-            border:3px solid var(--success);
+            box-shadow:var(--shadow);
+            border:3px solid;
             animation:pop 0.6s ease;
         }
-        @keyframes pop{
-            0%{transform:scale(0.4);opacity:0}
-            70%{transform:scale(1.1)}
-            100%{transform:scale(1)}
-        }
-        .success-icon{
+        .result-icon{
             width:100px;height:100px;
-            background:var(--success);
             color:#fff;
             border-radius:50%;
             display:flex;align-items:center;justify-content:center;
             margin:0 auto 20px;
             font-size:3.8rem;
         }
-        .success-name{font-size:2.2rem;font-weight:800;color:#155724}
-        .success-dept{font-size:1.35rem;color:#2e7d32;margin-top:8px}
+        .result-name{font-size:2.2rem;font-weight:800}
+        .result-dept{font-size:1.35rem;margin-top:8px}
+
+        /* สไตล์เฉพาะสำหรับ Success Card */
+        .success-card-style{
+            box-shadow:0 20px 50px rgba(0,200,83,.35);
+            border-color:var(--success);
+        }
+        .success-card-style .result-icon{background:var(--success)}
+        .success-card-style .result-name{color:#155724}
+        .success-card-style .result-dept{color:#2e7d32}
+        .success-card-style .result-msg{color:#2e7d32}
+
+        /* สไตล์เฉพาะสำหรับ Duplicate Card */
+        .duplicate-card-style{
+            box-shadow:0 20px 50px rgba(255,165,0,.35);
+            border-color:var(--warning);
+        }
+        .duplicate-card-style .result-icon{background:var(--warning)}
+        .duplicate-card-style .result-name{color:#d87b00}
+        .duplicate-card-style .result-dept{color:#d87b00}
+        .duplicate-card-style .result-msg{color:#d87b00; font-weight:700;}
+
+        @keyframes pop{
+            0%{transform:scale(0.4);opacity:0}
+            70%{transform:scale(1.1)}
+            100%{transform:scale(1)}
+        }
 
         @media(max-width:480px){
             #i{font-size:1.5rem;padding:24px}
-            .success-name{font-size:2rem}
+            .result-name{font-size:2rem}
         }
     </style>
 </head>
 <body>
 <div class="c">
-  <div class="h">
-    <h2>เข้าร่วมกิจกรรม</h2>
-    <p>งานปีใหม่</p>
-  </div>
-  <div class="ct">
-    <div class="sb">
-      <input type="text" id="i" placeholder="พิมพ์ชื่อหรือรหัสพนักงาน..." autocomplete="off" autofocus>
-      <ul id="r"></ul>
+    <div class="h">
+        <h2>เข้าร่วมกิจกรรม</h2>
+        <p>งานปีใหม่</p>
     </div>
-    <div id="res" class="visible info">พิมพ์รหัสหรือชื่อพนักงานแล้วกดเลือกจากรายการ</div>
-  </div>
+    <div class="ct">
+        <div class="sb">
+            <!-- เพิ่ม placeholder สำหรับ URL จริงของคุณ -->
+            <input type="text" id="i" placeholder="พิมพ์ชื่อหรือรหัสพนักงาน..." autocomplete="off" autofocus>
+            <ul id="r"></ul>
+        </div>
+        <div id="res" class="visible info">พิมพ์รหัสหรือชื่อพนักงานแล้วกดเลือกจากรายการ</div>
+    </div>
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzb6vYis20nG_t3vVSqg8GoEi-N8dPWXMC1Vis_vWYW7duvdKnIFl0mfsx10KWqVoSJ/exec";
+// !!! กรุณาแทนที่ URL นี้ด้วย Deploy Web App URL ที่ถูกต้องของคุณ !!!
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwuW_X_csPkIGi12xoOHiqGTzgZpSuDLwTjukMB9zjDCjCIDt_rJrAPH2fhv6Z2uMVS/exec"; 
 const resDiv = document.getElementById('res');
 const input = document.getElementById('i');
 const list = document.getElementById('r');
@@ -179,112 +202,141 @@ let lastSearch = 0;
 const MIN_DELAY = 120; // ค้นหาทันทีที่พิมพ์ (เร็วสุดที่ยังไม่ทำให้ server ล่ม)
 
 input.addEventListener('input', () => {
-  const now = Date.now();
-  if (now - lastSearch > MIN_DELAY) {
-    lastSearch = now;
-    search();
-  } else {
-    clearTimeout(window.st);
-    window.st = setTimeout(() => {
-      lastSearch = Date.now();
-      search();
-    }, MIN_DELAY);
-  }
+    const now = Date.now();
+    if (now - lastSearch > MIN_DELAY) {
+        lastSearch = now;
+        search();
+    } else {
+        clearTimeout(window.st);
+        window.st = setTimeout(() => {
+            lastSearch = Date.now();
+            search();
+        }, MIN_DELAY);
+    }
 });
 
 // กด Enter แล้วเลือกอันแรกทันที (เร็วมากสำหรับสแกนบาร์โค้ดหรือพิมพ์รหัส)
 input.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const firstItem = list.querySelector('.ri');
-    if (firstItem) {
-      e.preventDefault();
-      firstItem.click();
+    if (e.key === 'Enter') {
+        const firstItem = list.querySelector('.ri');
+        if (firstItem) {
+            e.preventDefault();
+            firstItem.click();
+        }
     }
-  }
 });
 
 async function search() {
-  const q = input.value.trim();
-  list.innerHTML = '';
-  list.classList.remove('show');
-
-  if (q.length < 4) { // ลดเหลือ 1 ตัวอักษรก็ค้นได้เลย
-    showInfo('พิมพ์ชื่อหรือรหัสพนักงาน');
-    return;
-  }
-
-  showLoading('กำลังค้นหา...');
-  try {
-    const r = await fetch(`${WEB_APP_URL}?action=search&q=${encodeURIComponent(q)}`);
-    const data = await r.json();
-    if (!data || data.length === 0) throw 'empty';
-
+    const q = input.value.trim();
     list.innerHTML = '';
-    data.slice(0, 15).forEach(e => {  // แสดงแค่ 15 คนแรกเพื่อความเร็ว
-      const li = document.createElement('li');
-      li.className = 'ri';
-      li.innerHTML = `
-        <div>
-          <div class="n">${e.name}</div>
-          <div class="d">รหัส: ${e.id} | แผนก: ${e.dept}</div>
-        </div>
-      `;
-      li.onclick = () => checkin(e.id, e.name, e.dept);
-      list.appendChild(li);
-    });
-    list.classList.add('show');
-  } catch(e) {
-    showError('ไม่พบข้อมูล');
-  }
+    list.classList.remove('show');
+
+    if (q.length < 2) { 
+        showInfo('พิมพ์ชื่อหรือรหัสพนักงาน');
+        return;
+    }
+
+    showLoading('กำลังค้นหา...');
+    try {
+        const r = await fetch(`${WEB_APP_URL}?action=search&q=${encodeURIComponent(q)}`);
+        const data = await r.json();
+        
+        // ตรวจสอบ error ที่ส่งกลับมา
+        if (data && data.length > 0 && data[0].id === 'error') {
+            showError(data[0].name);
+            return;
+        }
+
+        if (!data || data.length === 0) throw 'empty';
+
+        list.innerHTML = '';
+        data.slice(0, 15).forEach(e => {  // แสดงแค่ 15 คนแรกเพื่อความเร็ว
+            const li = document.createElement('li');
+            li.className = 'ri';
+            li.innerHTML = `
+                <div>
+                    <div class="n">${e.name}</div>
+                    <div class="d">รหัส: ${e.id} | แผนก: ${e.dept}</div>
+                </div>
+            `;
+            li.onclick = () => checkin(e.id, e.name, e.dept);
+            list.appendChild(li);
+        });
+        list.classList.add('show');
+        showInfo(`พบ ${data.length} รายการ (เลือกเพื่อลงทะเบียน)`);
+    } catch(e) {
+        showError('ไม่พบข้อมูลที่ตรงกัน');
+    }
 }
 
 async function checkin(id, name, dept) {
-  list.classList.remove('show');
-  input.value = name;
-  input.disabled = true;  // ป้องกันพิมพ์ซ้อน
-  showLoading(`กำลังบันทึก ${name}...`);
+    list.classList.remove('show');
+    input.value = name;
+    input.disabled = true; // ป้องกันพิมพ์ซ้อน
+    showLoading(`กำลังบันทึก ${name}...`);
 
-  try {
-    const r = await fetch(`${WEB_APP_URL}?action=checkin&id=${id}&t=${Date.now()}`); // cache buster
-    const result = await r.json();
+    try {
+        const r = await fetch(`${WEB_APP_URL}?action=checkin&id=${id}&t=${Date.now()}`); // cache buster
+        const result = await r.json();
 
-    if (result.status === 'success') {
-      showSuccessCard(name, dept);
-      // เร็วสุด! 900 ms ก็กลับมาพิมพ์คนต่อไปได้แล้ว
-      setTimeout(() => {
-        input.value = '';
+        if (result.status === 'success') {
+            showSuccessCard(result.name || name, result.dept || dept);
+        } else if (result.status === 'duplicate') {
+            showDuplicate(result.name || name, result.dept || dept);
+        } else {
+            // This handles generic 'error' status from the server
+            throw result.message || 'error';
+        }
+
+        // Reset the input field after a delay for both success and duplicate
+        setTimeout(() => {
+            input.value = '';
+            input.disabled = false;
+            input.focus();
+            showInfo('พิมพ์ชื่อหรือรหัสพนักงานคนต่อไป');
+        }, 1500); // เพิ่มเวลาเป็น 1.5 วินาที เพื่อให้เห็นผลลัพธ์ชัดเจนขึ้น
+
+    } catch (e) {
+        // This handles network errors or generic 'error' messages thrown above
+        console.error("Check-in Error:", e);
+        showError(e.toString() === 'error' || e.toString() === '[object Object]' ? 'บันทึกไม่สำเร็จ ลองใหม่' : e);
         input.disabled = false;
-        input.focus();
-        showInfo('พิมพ์ชื่อหรือรหัสพนักงานคนต่อไป');
-      }, 900);
-    } else {
-      throw result.message || 'error';
+        input.select();
     }
-  } catch(e) {
-    showError('บันทึกไม่สำเร็จ ลองใหม่');
-    input.disabled = false;
-    input.select();
-  }
 }
 
 function showInfo(m){ resDiv.innerHTML = m; resDiv.className = 'visible info'; }
 function showLoading(m){ resDiv.innerHTML = m; resDiv.className = 'visible loading'; }
 function showError(m){ resDiv.innerHTML = m; resDiv.className = 'visible error'; }
+
 function showSuccessCard(name, dept) {
-  resDiv.innerHTML = `
-    <div class="success-card">
-      <div class="success-icon"><i class="fas fa-check"></i></div>
-      <div class="success-name">${name}</div>
-      <div class="success-dept">แผนก: ${dept}</div>
-      <div style="margin-top:12px;color:#2e7d32;font-size:1.1rem;">ลงทะเบียนสำเร็จ!</div>
-    </div>
-  `;
-  resDiv.className = 'visible success';
+    resDiv.innerHTML = `
+        <div class="result-card success-card-style">
+            <div class="result-icon"><i class="fas fa-check"></i></div>
+            <div class="result-name">${name}</div>
+            <div class="result-dept">แผนก: ${dept}</div>
+            <div class="result-msg" style="margin-top:12px;font-size:1.1rem;">ลงทะเบียนสำเร็จ!</div>
+        </div>
+    `;
+    resDiv.className = 'visible success';
+}
+
+// ฟังก์ชันใหม่สำหรับแจ้งเตือนการลงทะเบียนซ้ำ
+function showDuplicate(name, dept) {
+    resDiv.innerHTML = `
+        <div class="result-card duplicate-card-style">
+            <div class="result-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="result-name">ลงทะเบียนซ้ำ</div>
+            <div class="result-dept">${name} | แผนก: ${dept}</div>
+            <div class="result-msg" style="margin-top:12px;font-size:1.1rem;">(ลงทะเบียนไปแล้ววันนี้)</div>
+        </div>
+    `;
+    resDiv.className = 'visible error'; // ใช้ error class เพื่อเปลี่ยนสีพื้นหลังให้ดูเป็น Warning
 }
 
 // คลิกนอกก็หุบ
 document.addEventListener('click', e => {
-  if (!e.target.closest('.sb')) list.classList.remove('show');
+    if (!e.target.closest('.sb')) list.classList.remove('show');
 });
 
 // เริ่มต้นทันที
@@ -292,4 +344,3 @@ window.onload = () => input.focus();
 </script>
 </body>
 </html>
-
